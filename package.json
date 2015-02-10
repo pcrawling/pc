@@ -1,0 +1,29 @@
+{
+  "name": "pc",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "connect-mongo": "^0.4.1",
+    "http-status": "*",
+    "winston": "*",
+    "connect": "*",
+    "debug": "*",
+    "express": "~3.0.0",
+    "node-foursquare-2": "git://github.com/clintandrewhall/node-foursquare",
+    "passport": "*",
+    "passport-foursquare": "git://github.com/jaredhanson/passport-foursquare",
+    "mongoose": "*",
+    "forever-monitor": "*",
+    "vow": "^0.4.5"
+  },
+  "scripts": {
+    "templ": "jsx ./public/bc/src ./public/bc/build"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
