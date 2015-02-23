@@ -1,9 +1,10 @@
 require('./api')(exports);
 require('./route')(exports);
+
 var logger = require('../lib/logger');
 
 exports.setResHeaders = function(req, res, next){
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8000'); //for CORS
+    res.header('Access-Control-Allow-Origin', 'http://localhost:63342'); //for CORS
     res.header('Access-Control-Allow-Credentials', 'true'); //for cookies
 //        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'); // for preflight request
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

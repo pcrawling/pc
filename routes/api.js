@@ -1,8 +1,8 @@
-var config = require('../lib/config')
-    , Foursquare = require('node-foursquare')(config)
-    , logger = require('../lib/logger')
-    , error = require('../lib/error')
-    , checkinApi = Foursquare.Checkins;
+var logger = require('../lib/logger'),
+    error = require('../lib/error'),
+    secret = require('../lib/secret'),
+    Foursquare = require('node-foursquare')(secret),
+    checkinApi = Foursquare.Checkins;
 
 module.exports = function(routes) {
     routes.checkin = function(req, res, next){

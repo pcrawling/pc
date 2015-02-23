@@ -1,12 +1,12 @@
-var config = require('../lib/config')
-    , url = require('url')
-    , vow = require('vow')
-    , logger = require('../lib/logger')
-    , error = require('../lib/error')
-    , Route = require('../models/route').RouteModel
-    , Venue = require('../models/venue').VenueModel
-    , Foursquare = require('node-foursquare')(config)
-    , venuesApi = Foursquare.Venues;
+var url = require('url'),
+    vow = require('vow'),
+    logger = require('../lib/logger'),
+    error = require('../lib/error'),
+    RouteModel = require('../models/route'),
+    VenueModel = require('../models/venue'),
+    secret = require('../lib/secret'),
+    Foursquare = require('node-foursquare')(secret),
+    venuesApi = Foursquare.Venues;
 
 module.exports = function(routes) {
     // get all routes
@@ -15,7 +15,7 @@ module.exports = function(routes) {
 
         logger.info('get all routes for %s', accessToken);
 
-        return Route.find(function (err, routes) {
+        return RouteModel.find(function (err, routes) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -34,7 +34,7 @@ module.exports = function(routes) {
 
         logger.info('get route with id= %s for %s', routeId, accessToken);
 
-        return Route.findById(routeId, function (err, route) {
+        return RouteModel.findById(routeId, function (err, route) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -58,7 +58,7 @@ module.exports = function(routes) {
 
         logger.info('get detailed route info with id= %s for %s', routeId, accessToken);
 
-        return Route.findById(routeId, function (err, route) {
+        return RouteModel.findById(routeId, function (err, route) {
             var trip;
 
             if (err) {
@@ -85,14 +85,18 @@ module.exports = function(routes) {
             function fetchVenueData(venueId) {
                 var innerFetch = vow.defer();
 
-                Venue.findById(venueId, function (err, savedData) {
+                //TODO promise?
+                VenueModel.findById(venueId, function (err, savedData) {
                     if (err) {
                         logger.error('Internal error: %s', err);
                         innerFetch.reject(new error.HttpError(500, 'Internal error'));
                     };
 
                     //TODO переделать этот кусок
-                    if (!savedData) {
+                    if (savedData) {
+                        logger.info('Have saved data for venue with id = %s', venueId);
+                        innerFetch.resolve(savedData.toObject());
+                    } else {
                         logger.info('Haven`t saved data for venue with id = %s', venueId);
 
                         venuesApi.getVenue(venueId, null, function(err, data){
@@ -101,17 +105,16 @@ module.exports = function(routes) {
                                 innerFetch.reject(new error.HttpError(500, 'Internal error'));
                             }
                             logger.info('Data has given for venue with id = %s', venueId);
-                            console.log('---DATA---', data.venue.id);
-                            new Venue(data.venue).save(function(err, data){
-                                err && logger.error('Save error, shit happens %s', err);
+
+                            new VenueModel(data.venue).save(function(err, savedData){
+                                if(err){
+                                    logger.error('Save error, shit happens %s', err);
+                                    innerFetch.resolve(data.venue);
+                                } else {
+                                    innerFetch.resolve(savedData);
+                                }
                             });
-
-                            innerFetch.resolve(data);
-
                         });
-                    } else {
-                        logger.info('Have saved data for venue with id = %s', venueId);
-                        innerFetch.resolve(savedData.toObject());
                     }
 
                     logger.info('Got data for venue with id = %s', venueId);
@@ -132,7 +135,7 @@ module.exports = function(routes) {
 
         logger.info('get route with route filter %s for %s', filter, accessToken);
 
-        Route.find(filter , function (err, data) {
+        RouteModel.find(filter , function (err, data) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -157,7 +160,7 @@ module.exports = function(routes) {
 
         logger.info('get route with venue filter %s for %s', filter, accessToken);
 
-        Route.venues.find(filter , function (err, data) {
+        RouteModel.venues.find(filter , function (err, data) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -182,7 +185,7 @@ module.exports = function(routes) {
 
         logger.info('get route with filter %s for %s', filter, accessToken);
 
-        Route.find(filter , function (err, data) {
+        RouteModel.find(filter , function (err, data) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -233,7 +236,7 @@ module.exports = function(routes) {
         // будем запрещать создание для unknow?
         logger.info('add new route with for %s', accessToken);
 
-        var route = new Route(routeData);
+        var route = new RouteModel(routeData);
 
         return route.save(function (err, addedRoute) {
 

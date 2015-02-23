@@ -60,4 +60,4 @@ Venue.pre("save", function(next) {
 //    return desc.length > 5 && desc.length < 70;
 //});
 
-module.exports.VenueModel = mongoose.model('Venue', Venue);
+module.exports = mongoose.model('Venue', Venue);

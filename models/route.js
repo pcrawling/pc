@@ -26,4 +26,4 @@ Route.path('description').validate(function (desc) {
     return desc.length > 5 && desc.length < 70;
 });
 
-module.exports.RouteModel = mongoose.model('Route', Route);
+module.exports = mongoose.model('Route', Route);
