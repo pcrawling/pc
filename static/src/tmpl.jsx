@@ -208,8 +208,6 @@ var InterfaceComponent = React.createClass({
     }
 });
 
-pc.router = new Router();
-
 React.renderComponent(
     <InterfaceComponent router={pc.router} />,
     document.getElementById('app')
