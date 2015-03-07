@@ -4,7 +4,7 @@ var stylus = require('gulp-stylus');
 
 gulp.task('jsx', function () {
     gulp.src('static/src/*')
-        .pipe(react({harmony: true}))
+        .pipe(react())
         .pipe(gulp.dest('static/build'));
 });
 
@@ -14,7 +14,9 @@ gulp.task('stylus', function () {
         .pipe(gulp.dest('static/css'));
 });
 
-gulp.watch('static/src/*', ['jsx']);
-gulp.watch('static/styl/*', ['stylus']);
+gulp.task('watch', function () {
+    gulp.watch('static/src/*', ['jsx']);
+    gulp.watch('static/styl/*', ['stylus']);
+});
 
 gulp.task('default', ['jsx', 'stylus']);

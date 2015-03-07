@@ -1,4 +1,6 @@
-/** @jsx React.DOM */
+var pc = pc || {};
+var Router = ReactRouter;
+
 /* @see http://en.wikipedia.org/wiki/Pub_crawl */
 var trip = [
     '4d56f044ba5b224b8e5a2114',
@@ -16,9 +18,9 @@ var trip = [
     '4ceebab182125481ac3666a1'
 ];
 
-(function(){
+(function(pc){
     var _cache = {};
-    var pc = {};
+    var pc = pc || {};
     var CLIENT_ID = 'G5O2WXZXPB41SESRA1CZ3R52XZZ2112G0QD2HEZHD0IZDAXJ';
     var CLIENT_SECRET = 'QHSC0IC4RM45SHGGFHR2SP35OGTZVN4Y41MDIV2JIJJLKZBT';
     pc.requestData = {
@@ -116,8 +118,7 @@ var trip = [
         return def.promise();
     };
 
-    window.pc = pc; // pc - Pub crawl
-})();
+})(pc);
 
 var Venue = React.createClass({
 
@@ -146,7 +147,7 @@ var Venue = React.createClass({
 
 var VenuesList = React.createClass({
     render: function() {
-        var Venues = this.props.data.map(function (venue) {
+        var Venues = pc.VenuesData.map(function (venue) {
             return (
                 <Venue data={venue} />
             );
@@ -171,44 +172,81 @@ var MapComponent = React.createClass({
     render: function() {
         return (
             <div className="b-map">
-                <a href="#">К списку баров</a>
                 <div id="mapCanvas"></div>
             </div>
         );
     }
 });
 
-var InterfaceComponent = React.createClass({
-    componentWillMount : function() {
-        this.callback = (function() {
-            this.forceUpdate();
-        }).bind(this);
+//var InterfaceComponent = React.createClass({
+//    componentWillMount : function() {
+//        this.callback = (function() {
+//            this.forceUpdate();
+//        }).bind(this);
+//
+//        this.props.router.on("route", this.callback);
+//    },
+//    componentWillUnmount : function() {
+//        this.props.router.off("route", this.callback);
+//    },
+//    getInitialState: function() {
+//        return {data: []};
+//    },
+//    componentDidMount: function() {
+//        var that = this;
+//        pc.getTrip().then(function(data){
+//            that.setState({data: data});
+//        });
+//
+//
+//    },
+//    render : function() {
+//        if (this.props.router.current == "map") {
+//            return <MapComponent />;
+//        }
+//        return <VenuesList data={this.state.data} />;
+//    }
+//});
+//
+//React.renderComponent(
+//    <InterfaceComponent router={pc.router} />,
+//    document.getElementById('app')
+//);
 
-        this.props.router.on("route", this.callback);
-    },
-    componentWillUnmount : function() {
-        this.props.router.off("route", this.callback);
-    },
-    getInitialState: function() {
-        return {data: []};
-    },
-    componentDidMount: function() {
-        var that = this;
-        pc.getTrip().then(function(data){
-            that.setState({data: data});
-        });
+var DefaultRoute = Router.DefaultRoute;
+var Link = Router.Link;
+var Route = Router.Route;
+var RouteHandler = Router.RouteHandler;
 
+var App = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <header>
+                    <ul>
+                        <li><Link to="map">Map</Link></li>
+                        <li><Link to="list">List</Link></li>
+                    </ul>
+                </header>
 
-    },
-    render : function() {
-        if (this.props.router.current == "map") {
-            return <MapComponent />;
-        }
-        return <VenuesList data={this.state.data} />;
+                <RouteHandler/>
+            </div>
+        );
     }
 });
 
-React.renderComponent(
-    <InterfaceComponent router={pc.router} />,
-    document.getElementById('app')
+var routes = (
+    <Route name="app" path="/" handler={App}>
+        <Route name="map" handler={MapComponent} />
+        <Route name="list" handler={VenuesList} />
+        <DefaultRoute handler={VenuesList}/>
+    </Route>
 );
+
+pc.getTrip().then(function(data){
+    pc.VenuesData = data; // TODO: выпилить
+    Router.run(routes, Router.HistoryLocation, function (Handler) {
+        React.render(<Handler />, document.getElementById('app'));
+    });
+
+});

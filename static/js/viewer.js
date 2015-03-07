@@ -5,7 +5,7 @@ function Map() {
             lat: 59.949277,
             lng: 30.3041534,
             elem: document.getElementById('mapCanvas'),
-            icon: 'i/baloon.svg'
+            icon: 'static/i/baloon.svg'
         },
         directionDisplayOptions = {
             suppressMarkers: true,
@@ -192,7 +192,6 @@ function Map() {
      * @returns {map}
      */
     this.draw = function(barsData){
-        debugger;
         //TODO можно убрать проверку, если инициализировать все utils в конструкторе
         this.routeUtils && clearDirections(this.routeUtils.renderer);
         return this._draw(barsData);
