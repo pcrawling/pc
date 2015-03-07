@@ -210,8 +210,6 @@ var InterfaceComponent = React.createClass({
 
 pc.router = new Router();
 
-Backbone.history.start();
-
 React.renderComponent(
     <InterfaceComponent router={pc.router} />,
     document.getElementById('app')
