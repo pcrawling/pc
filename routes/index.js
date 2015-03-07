@@ -28,8 +28,9 @@ exports.redirect = function(req, res){
 };
 
 exports.callback = function(req, res){
-    //TODO сделать нормальную страницу типа все путем или даже просто самим закрывать всплывающий попап
-    res.send(req.user);
+    if (req.user) {
+        res.redirect('/');
+    }
 };
 
 exports.login = function(req, res) {

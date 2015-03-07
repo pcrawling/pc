@@ -3,7 +3,6 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
     morgan = require('morgan'),
-    errorhandler = require('errorhandler'),
 
     routes = require('./routes'),
     config = require('./lib/config'),
@@ -11,10 +10,13 @@ var express = require('express'),
     passport = require('./lib/access'),
     mongoose = require('./lib/db'),
     logger = require('./lib/logger'),
-    MongoStore = require('connect-mongo')(session),
-    path = require('path');
+    path = require('path'),
+    MongoStore = require('connect-mongo')(session);
 
 var app = express();
+
+app.set('views', path.join(__dirname, 'tmpl'));
+app.set('view engine', 'jade');
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -32,45 +34,31 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 require('./dbContent');
 
-app.all('*', routes.setResHeaders);
+app.use(routes.setResHeaders);
 
-// GET /auth/foursquare
+app.get('/', function(req, res, next) {
+    res.render('index', { title: 'Hey', message: 'Hello there!'});
+});
+
+
 app.get('/auth/foursquare', passport.authenticate('foursquare'), routes.login);
-
-// GET /auth/foursquare/callback
 app.get('/callback', passport.authenticate('foursquare', { failureRedirect: '/login' }), routes.callback);
-
-
 app.get('/logout', routes.logout);
 
-//--------------- маршруты -------------
-app.get('/routes', routes.routes);
-app.post('/route', routes.add);
-app.get('/route/:routeId', routes.route);
+app.use(passport.ensureAuthenticated);
 
+//--------------- маршруты -------------
+app.route('/route')
+    .get(routes.routes)
+    .post(routes.add);
+
+app.get('/route/:routeId', routes.route);
 app.get('/detail/:routeId', routes.detail);
 
-// эта часть  api не работает, тк надо по другому писать схемы и переписывать запросы
-//app.get('/route/filter', routes.routeFilter);
-//app.get('/venue/filter', routes.venueFilter);
-//app.get('/drink/filter', routes.drinkFilter);
-
 //--------------- чекины ---------------
-app.all('*', passport.ensureAuthenticated);
 app.get('/checkin/:venueId', routes.checkin);
-
-//TODO error!
-// В конце - обработчик ошибок
-if (app.get('env') == 'development') {
-    function errorHandler(err, req, res, next) {
-        res.send(err.status, err.message);
-    }
-    app.use(errorHandler);
-}
 
 app.listen(config.app.port, function() {
     logger.trace("Express server listening on port " + config.app.port);

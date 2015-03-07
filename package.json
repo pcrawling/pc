@@ -12,14 +12,12 @@
     "winston": "*",
     "connect": "*",
     "debug": "*",
-
     "express": "~4.0.0",
     "body-parser": "^1.0.0",
     "cookie-parser": "^1.0.0",
     "express-session": "^1.0.0",
     "morgan": "^1.5.0",
     "errorhandler": "^1.0.0",
-
     "node-foursquare-2": "git://github.com/clintandrewhall/node-foursquare",
     "passport": "*",
     "passport-foursquare": "git://github.com/jaredhanson/passport-foursquare",
@@ -28,9 +26,12 @@
     "vow": "^0.4.5"
   },
   "scripts": {
-    "templ": "jsx ./public/bc/src ./public/bc/build"
+    "templ": "jsx ./static/src ./static/build"
   },
   "repository": "",
   "author": "",
-  "license": "BSD"
+  "license": "BSD",
+  "devDependencies": {
+    "gulp-stylus": "^2.0.1"
+  }
 }
