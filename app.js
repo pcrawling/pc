@@ -11,7 +11,9 @@ var express = require('express'),
     mongoose = require('./lib/db'),
     logger = require('./lib/logger'),
     path = require('path'),
-    MongoStore = require('connect-mongo')(session);
+    MongoStore = require('connect-mongo')(session),
+    request = require('request'),
+    utils = require('./lib/utils.js');
 
 var app = express();
 
@@ -38,26 +40,52 @@ require('./dbContent');
 
 app.use(routes.setResHeaders);
 
-app.get('/', function(req, res, next) {
-    res.render('index', { title: 'Hey', message: 'Hello there!'});
-});
 
+app.get('/', function(req, res) {
+    res.render('index');
+});
 
 app.get('/auth/foursquare', passport.authenticate('foursquare'), routes.login);
 app.get('/callback', passport.authenticate('foursquare', { failureRedirect: '/login' }), routes.callback);
 app.get('/logout', routes.logout);
 
-app.use(passport.ensureAuthenticated);
-
 //--------------- маршруты -------------
-app.route('/route')
+app.route('/routes')
     .get(routes.routes)
     .post(routes.add);
 
 app.get('/route/:routeId', routes.route);
 app.get('/detail/:routeId', routes.detail);
+app.get('/venue/:venueId', function(req, res, next) {
+    var requestData = {
+        v: utils.getVparam(),
+        client_id: secret.clientId,
+        client_secret: secret.clientSecret
+    };
+
+    var urlPostfix = req.params.isLess ? '/venueless' : '/venues';
+    var url = config.foursquare.apiUrl + urlPostfix  + "/" + req.params.venueId;
+
+    var options = {
+        url: url,
+        qs: requestData
+    };
+
+    request(options, function(err, response, body) {
+        try {
+            body = JSON.parse(body);
+        } catch(e) {
+            next('json stringify');
+        }
+
+        var data = utils.sanitizeVenueData(body.response.venue);
+        res.send(data);
+    })
+});
+
 
 //--------------- чекины ---------------
+app.use(passport.ensureAuthenticated);
 app.get('/checkin/:venueId', routes.checkin);
 
 app.listen(config.app.port, function() {

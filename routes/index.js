@@ -13,12 +13,7 @@ exports.setResHeaders = function(req, res, next){
     res.header("X-Frame-Options", "deny");
     res.header("X-XSS-Protection", "1; mode=block");
 
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-        res.send(200);
-    } else {
-        next();
-    }
+    next();
 };
 
 exports.redirect = function(req, res){
@@ -27,9 +22,11 @@ exports.redirect = function(req, res){
     // function will not be called.
 };
 
-exports.callback = function(req, res){
+exports.callback = function(req, res, next){
     if (req.user) {
-        res.redirect('/');
+        next();
+    } else {
+        next('[callback] Error');
     }
 };
 

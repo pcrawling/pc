@@ -34,7 +34,7 @@ module.exports = function(routes) {
 
         logger.info('get route with id= %s for %s', routeId, accessToken);
 
-        return RouteModel.findById(routeId, function (err, route) {
+        return RouteModel.find({id: routeId}, function (err, route) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -46,7 +46,7 @@ module.exports = function(routes) {
             }
 
             logger.info('send route with id=%s for %s', routeId, accessToken);
-            return res.jsonp(route);
+            return res.json(route);
         });
     };
 
