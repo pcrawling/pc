@@ -42,11 +42,11 @@ app.use(routes.setResHeaders);
 
 
 app.get('/', function(req, res) {
-    res.render('index');
+    res.render('index', { user: req.user });
 });
 
 app.get('/auth/foursquare', passport.authenticate('foursquare'), routes.login);
-app.get('/callback', passport.authenticate('foursquare', { failureRedirect: '/login' }), routes.callback);
+app.get('/callback', passport.authenticate('foursquare', { successRedirect: '/', failureRedirect: '/login' }));
 app.get('/logout', routes.logout);
 
 //--------------- маршруты -------------

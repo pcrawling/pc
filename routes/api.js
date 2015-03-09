@@ -22,8 +22,7 @@ module.exports = function(routes) {
                 next(new error.HttpError(500, 'checkin error'));
             }
 
-            res.jsonp(data);
-//            res.send(data);
+            res.send(data);
         });
     }
 };

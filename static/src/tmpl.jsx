@@ -57,23 +57,7 @@ var Router = ReactRouter;
     }
 
     pc.doCheckIn = function(venueId) {
-        var def = new vow.Deferred();
-        var url = "https://api.foursquare.com/v2/checkins/add";
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {
-                venueId: venueId,
-                oauth_token: TOKEN,
-                v: getVparam()
-            },
-            dataType: "json"
-        }).done(function(data){
-            def.resolve(data);
-        }).fail(function(err) {
-            console.warn('[checkIn]', err);
-        });
-        return def.promise();
+        return $.get('checkin/' + venueId);
     };
 
 })(pc);
@@ -89,15 +73,24 @@ var Venue = React.createClass({
         var divStyle = {
             background: 'url(' + this.props.data.photo_url + ') 50% 50% no-repeat'
         };
+
+        var vRating;
+
+        if (this.props.data.rating) {
+            vRating = <div className="vRating">
+                <span className="vRating__num">
+                {this.props.data.rating}
+                </span>/10</div>;
+        }
         return (
             <div className="v" style={divStyle}>
-                <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>click</div>
+                <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>
+                    <img src="static/i/baloon.svg" />
+                </div>
                 <div className="vName">
                     {this.props.data.name}
                 </div>
-                <div className="vRating">
-                    {this.props.data.rating}/10
-                </div>
+                {vRating}
             </div>
             );
     }

@@ -22,14 +22,6 @@ exports.redirect = function(req, res){
     // function will not be called.
 };
 
-exports.callback = function(req, res, next){
-    if (req.user) {
-        next();
-    } else {
-        next('[callback] Error');
-    }
-};
-
 exports.login = function(req, res) {
     logger.info('login');
     if(!req.user) {
