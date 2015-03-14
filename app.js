@@ -40,23 +40,19 @@ require('./dbContent');
 
 app.use(routes.setResHeaders);
 
-
-app.get('/', function(req, res) {
-    res.render('index', { auth: !!req.user });
-});
-
 app.get('/auth/foursquare', passport.authenticate('foursquare'), routes.login);
 app.get('/callback', passport.authenticate('foursquare', { successRedirect: '/', failureRedirect: '/login' }));
 app.get('/logout', routes.logout);
 
 //--------------- маршруты -------------
-app.route('/routes')
+
+app.route('/api/v1/routes')
     .get(routes.routes)
     .post(routes.add);
 
-app.get('/route/:routeId', routes.route);
-app.get('/detail/:routeId', routes.detail);
-app.get('/venue/:venueId', function(req, res, next) {
+app.get('/api/v1/route/:routeId', routes.route);
+app.get('/api/v1/detail/:routeId', routes.detail);
+app.get('/api/v1/venue/:venueId', function(req, res, next) {
     var requestData = {
         v: utils.getVparam(),
         client_id: secret.clientId,
@@ -86,7 +82,11 @@ app.get('/venue/:venueId', function(req, res, next) {
 
 //--------------- чекины ---------------
 app.use(passport.ensureAuthenticated);
-app.get('/checkin/:venueId', routes.checkin);
+app.get('/api/v1/checkin/:venueId', routes.checkin);
+
+app.get('*', function(req, res) {
+    res.render('index', { auth: !!req.user });
+});
 
 app.listen(config.app.port, function() {
     logger.trace("Express server listening on port " + config.app.port);

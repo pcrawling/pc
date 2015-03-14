@@ -14,7 +14,7 @@ var Router = ReactRouter;
     pc._getVenue = function(id, isLess) {
         var def = new vow.Deferred();
         $.ajax({
-            url: "/venue/" + id,
+            url: "/api/v1/venue/" + id,
             type: "GET",
             dataType: "json"
         }).done(function(data){
@@ -37,7 +37,7 @@ var Router = ReactRouter;
     pc.getTrip = function(id) {
         var promises = [];
         var def = new vow.Deferred();
-        $.get('/route/' + id, function(data) {
+        $.get('/api/v1/route/' + id, function(data) {
             data[0].venues.forEach(function(v){
                 promises.push(pc.getVenue(v.id));
             });
@@ -56,7 +56,7 @@ var Router = ReactRouter;
     }
 
     pc.doCheckIn = function(venueId) {
-        return $.get('checkin/' + venueId);
+        return $.get('/api/v1/checkin/' + venueId);
     };
 
 })(pc);
