@@ -1,4 +1,3 @@
-var pc = pc || {};
 var Router = ReactRouter;
 
 /* @see http://en.wikipedia.org/wiki/Pub_crawl */
@@ -35,10 +34,10 @@ var Router = ReactRouter;
         }
     };
 
-    pc.getTrip = function() {
+    pc.getTrip = function(id) {
         var promises = [];
         var def = new vow.Deferred();
-        $.get('route/1', function(data) {
+        $.get('/route/' + id, function(data) {
             data[0].venues.forEach(function(v){
                 promises.push(pc.getVenue(v.id));
             });
@@ -74,22 +73,41 @@ var Venue = React.createClass({
             background: 'url(' + this.props.data.photo_url + ') 50% 50% no-repeat'
         };
 
+        var ratingStyle = {
+            color: '#' + this.props.data.color
+        };
+
         var vRating;
+        var vHere;
+        var vCheckIn;
 
         if (this.props.data.rating) {
             vRating = <div className="vRating">
-                <span className="vRating__num">
+                <span className="vRating__num" style={ratingStyle}>
                 {this.props.data.rating}
                 </span>/10</div>;
         }
+
+        if (this.props.data.here_now) {
+            vHere = <span className="vHereNow">
+                    {this.props.data.here_now}
+                    &nbsp;<img width="13" src="/static/i/group58.svg" />
+            </span>
+        }
+
+        if (pc.auth) {
+            vCheckIn = <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>
+            CHECK IN
+            </div>
+        }
+
         return (
             <div className="v" style={divStyle}>
-                <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>
-                    <img src="static/i/baloon.svg" />
-                </div>
+                {vCheckIn}
                 <div className="vName">
                     {this.props.data.name}
                 </div>
+                {vHere}
                 {vRating}
             </div>
             );
@@ -97,6 +115,8 @@ var Venue = React.createClass({
 });
 
 var VenuesList = React.createClass({
+    mixins: [Router.State],
+
     getInitialState: function() {
         return {
             data: []
@@ -104,11 +124,14 @@ var VenuesList = React.createClass({
     },
     componentDidMount: function() {
         var that = this;
+        var routeId = this.getParams().routeId;
 
-        pc.getTrip().then(function(data){
+        pc.getTrip(routeId).then(function(data){
             that.setState({
                 data: data
             });
+
+            pc.initialize(data);
         });
     },
 
@@ -123,6 +146,7 @@ var VenuesList = React.createClass({
             <div className="VenuesList">
                 {Venues}
             </div>
+
         );
 
     }
@@ -130,7 +154,7 @@ var VenuesList = React.createClass({
 
 var MapComponent = React.createClass({
     componentDidMount: function() {
-        pc.getTrip().then(function(data){
+        pc.getTrip(1).then(function(data){
             pc.initialize(data);
         });
     },
@@ -150,13 +174,18 @@ var RouteHandler = Router.RouteHandler;
 
 var App = React.createClass({
     render: function () {
+        var login = !pc.auth ? <a href="/auth/foursquare">log in</a> : '';
+
         return (
             <div>
                 <header>
                     <ul>
                         <li><Link to="map">Map</Link></li>
-                        <li><Link to="list">List</Link></li>
+                        <li><Link to="routes">Routes</Link></li>
                     </ul>
+                    <div className="user-info">
+                        {login}
+                    </div>
                 </header>
 
                 <RouteHandler/>
@@ -165,11 +194,24 @@ var App = React.createClass({
     }
 });
 
+var Routes = React.createClass({
+   render: function() {
+       return (
+
+           <div>
+               <Link to="route" params={{routeId: 1}}>route1</Link>
+               <Link to="route" params={{routeId: 2}}>route2</Link>
+           </div>
+       )
+   }
+});
+
 var routes = (
     <Route name="app" path="/" handler={App}>
         <Route name="map" handler={MapComponent} />
-        <Route name="list" handler={VenuesList} />
-        <DefaultRoute handler={VenuesList}/>
+        <Route name="routes" handler={Routes} />
+        <Route name="route" path="/route/:routeId" handler={VenuesList} />
+        <DefaultRoute handler={Routes}/>
     </Route>
 );
 

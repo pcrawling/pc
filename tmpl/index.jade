@@ -8,12 +8,10 @@ html(lang="en")
         script(src='static/bower_components//vow/lib/vow.js')
         script(src='http://maps.googleapis.com/maps/api/js?v=3.9&key=AIzaSyBZkK01hng-ry6tdmzBHkfOFKCHgVHxdH0&sensor=true')
         link(rel='stylesheet', href='static/css/main.css')
+        script.
+            var pc = pc || {};
+            pc.auth = !{auth};
     body
-        if user
-            p Auth
-        else
-            p no Auth
-                a(href='/auth/foursquare') login
         #app
         script(src='static/bower_components/react-router/build/global/ReactRouter.js')
         script(src='static/build/router.js')

@@ -42,7 +42,7 @@ app.use(routes.setResHeaders);
 
 
 app.get('/', function(req, res) {
-    res.render('index', { user: req.user });
+    res.render('index', { auth: !!req.user });
 });
 
 app.get('/auth/foursquare', passport.authenticate('foursquare'), routes.login);
