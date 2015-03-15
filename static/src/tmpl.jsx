@@ -177,6 +177,10 @@ var App = React.createClass({
         $('.b-map').toggle();
     },
 
+    showControls: function(){
+        $('#app').toggleClass('move');
+    },
+
     render: function () {
         var login = !pc.auth ? <a href="/auth/foursquare">log in</a> : '';
 
@@ -184,6 +188,7 @@ var App = React.createClass({
             <div>
                 <header>
                     <Link className="backBtn" to="routes">&larr;</Link>
+                    <div className="controlsBtn" onClick={this.showControls}></div>
                     <div className="logo">BAR&amp;BARS</div>
                     <div className="map" onClick={this.onClick}>maps</div>
                     <div className="user-info">
@@ -263,6 +268,26 @@ var Way = React.createClass({
     }
 });
 
+var SideBar = React.createClass({
+    render: function() {
+        return (
+            <div>
+                <ul>
+                    <li>Аккаунт</li>
+                    <li>Список маршрутов</li>
+                    <li>Мои маршруты</li>
+                    <li>Добавить маршрут</li>
+                    <li>Топ мест</li>
+                    <li>Выход</li>
+                </ul>
+                <div className="sidebar-logo">
+                    BAR&amp; BARS
+                </div>
+            </div>
+        )
+    }
+});
+
 
 
 var routes = (
@@ -276,6 +301,7 @@ var routes = (
 pc.init = function() {
     Router.run(routes, Router.HistoryLocation, function (Handler) {
         React.render(<Handler />, document.getElementById('app'));
+        React.render(<SideBar />, document.getElementById('sidebar'));
     });
 };
 
