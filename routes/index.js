@@ -13,23 +13,13 @@ exports.setResHeaders = function(req, res, next){
     res.header("X-Frame-Options", "deny");
     res.header("X-XSS-Protection", "1; mode=block");
 
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-        res.send(200);
-    } else {
-        next();
-    }
+    next();
 };
 
 exports.redirect = function(req, res){
     logger.warn('redirect');
     // The request will be redirected to Foursquare for authentication, so this
     // function will not be called.
-};
-
-exports.callback = function(req, res){
-    //TODO сделать нормальную страницу типа все путем или даже просто самим закрывать всплывающий попап
-    res.send(req.user);
 };
 
 exports.login = function(req, res) {

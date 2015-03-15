@@ -7,30 +7,32 @@
     "test": "test"
   },
   "dependencies": {
-    "connect-mongo": "*",
-    "http-status": "*",
-    "winston": "*",
-    "connect": "*",
-    "debug": "*",
-
-    "express": "~4.0.0",
     "body-parser": "^1.0.0",
+    "connect": "*",
+    "connect-mongo": "*",
     "cookie-parser": "^1.0.0",
-    "express-session": "^1.0.0",
-    "morgan": "^1.5.0",
+    "debug": "*",
     "errorhandler": "^1.0.0",
-
+    "express": "~4.0.0",
+    "express-session": "^1.0.0",
+    "forever-monitor": "*",
+    "http-status": "*",
+    "mongoose": "*",
+    "morgan": "^1.5.0",
     "node-foursquare-2": "git://github.com/clintandrewhall/node-foursquare",
     "passport": "*",
     "passport-foursquare": "git://github.com/jaredhanson/passport-foursquare",
-    "mongoose": "*",
-    "forever-monitor": "*",
-    "vow": "^0.4.5"
+    "request": "^2.53.0",
+    "vow": "^0.4.5",
+    "winston": "*"
   },
   "scripts": {
-    "templ": "jsx ./public/bc/src ./public/bc/build"
+    "templ": "jsx ./static/src ./static/build"
   },
   "repository": "",
   "author": "",
-  "license": "BSD"
+  "license": "BSD",
+  "devDependencies": {
+    "gulp-stylus": "^2.0.1"
+  }
 }

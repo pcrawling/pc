@@ -1,0 +1,20 @@
+{
+  "name": "static",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mishk0/pubcrawling",
+  "authors": [
+    "mishk0 <proverstka@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vow": "~0.4.8",
+    "react-router": "~0.12.4"
+  }
+}

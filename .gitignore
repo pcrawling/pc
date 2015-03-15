@@ -1,1 +1,5 @@
 /lib/secret.js
+/node_modules
+/static/build
+/static/css
+static/bower_components
