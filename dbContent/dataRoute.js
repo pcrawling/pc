@@ -2,7 +2,6 @@ var dataRoute = [
     {
         //Yandex
         name: 'почта-морда',
-        description: '3 пьяных яндексоида рекомендуют',
         author: '91899962',
         id: '1',
         venues: [
@@ -86,7 +85,6 @@ var dataRoute = [
     {
         //Bon
         name: 'бон',
-        description: 'чтобы все збс и по пейсам',
         author: '91899962',
         id: '2',
         venues:[
@@ -121,6 +119,106 @@ var dataRoute = [
                         count: 1
                     }
                 ]
+            }
+        ]
+    },
+    {
+        name: 'синяя яма1',
+        author: '91899962',
+        id: '3',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма2',
+        author: '91899962',
+        id: '4',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма3',
+        author: '91899962',
+        id: '5',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма4',
+        author: '91899962',
+        id: '6',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма5',
+        author: '91899962',
+        id: '7',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма6',
+        author: '91899962',
+        id: '8',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма7',
+        author: '91899962',
+        id: '9',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма8',
+        author: '91899962',
+        id: '10',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма9',
+        author: '91899962',
+        id: '11',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
+            }
+        ]
+    },
+    {
+        name: 'синяя яма10',
+        author: '91899962',
+        id: '12',
+        venues:[
+            {
+                id: '4ceebab182125481ac3666a1'
             }
         ]
     }

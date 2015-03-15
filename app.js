@@ -11,9 +11,7 @@ var express = require('express'),
     mongoose = require('./lib/db'),
     logger = require('./lib/logger'),
     path = require('path'),
-    MongoStore = require('connect-mongo')(session),
-    request = require('request'),
-    utils = require('./lib/utils.js');
+    MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
@@ -52,33 +50,7 @@ app.route('/api/v1/routes')
 
 app.get('/api/v1/route/:routeId', routes.route);
 app.get('/api/v1/detail/:routeId', routes.detail);
-app.get('/api/v1/venue/:venueId', function(req, res, next) {
-    var requestData = {
-        v: utils.getVparam(),
-        client_id: secret.clientId,
-        client_secret: secret.clientSecret
-    };
-
-    var urlPostfix = req.params.isLess ? '/venueless' : '/venues';
-    var url = config.foursquare.apiUrl + urlPostfix  + "/" + req.params.venueId;
-
-    var options = {
-        url: url,
-        qs: requestData
-    };
-
-    request(options, function(err, response, body) {
-        try {
-            body = JSON.parse(body);
-        } catch(e) {
-            next('json stringify');
-        }
-
-        var data = utils.sanitizeVenueData(body.response.venue);
-        res.send(data);
-    })
-});
-
+app.get('/api/v1/venue/:venueId', routes.getVenue);
 
 //--------------- чекины ---------------
 app.use(passport.ensureAuthenticated);

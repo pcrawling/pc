@@ -22,7 +22,7 @@ module.exports = function(routes) {
             }
 
             logger.info('send all routes for %s', accessToken);
-            return res.jsonp(routes);
+            return res.json(routes);
         });
     };
 

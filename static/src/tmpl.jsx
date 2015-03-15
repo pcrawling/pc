@@ -59,6 +59,10 @@ var Router = ReactRouter;
         return $.get('/api/v1/checkin/' + venueId);
     };
 
+    pc.getRoutes = function() {
+        return $.get('/api/v1/routes/');
+    }
+
 })(pc);
 
 var Venue = React.createClass({
@@ -145,6 +149,7 @@ var VenuesList = React.createClass({
         return (
             <div className="VenuesList">
                 {Venues}
+                <MapComponent />
             </div>
 
         );
@@ -153,14 +158,9 @@ var VenuesList = React.createClass({
 });
 
 var MapComponent = React.createClass({
-    componentDidMount: function() {
-        pc.getTrip(1).then(function(data){
-            pc.initialize(data);
-        });
-    },
     render: function() {
         return (
-            <div className="b-map">
+            <div className="b-map" style={{display: 'none'}}>
                 <div id="mapCanvas"></div>
             </div>
         );
@@ -173,16 +173,19 @@ var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
 var App = React.createClass({
+    onClick: function(){
+        $('.b-map').toggle();
+    },
+
     render: function () {
         var login = !pc.auth ? <a href="/auth/foursquare">log in</a> : '';
 
         return (
             <div>
                 <header>
-                    <ul>
-                        <li><Link to="map">Map</Link></li>
-                        <li><Link to="routes">Routes</Link></li>
-                    </ul>
+                    <Link className="backBtn" to="routes">&larr;</Link>
+                    <div className="logo">BAR&amp;BARS</div>
+                    <div className="map" onClick={this.onClick}>maps</div>
                     <div className="user-info">
                         {login}
                     </div>
@@ -195,20 +198,75 @@ var App = React.createClass({
 });
 
 var Routes = React.createClass({
-   render: function() {
-       return (
+    getInitialState: function() {
+        return {
+            data: []
+        }
+    },
+    componentDidMount: function() {
+        var that = this;
 
-           <div>
-               <Link to="route" params={{routeId: 1}}>route1</Link>
-               <Link to="route" params={{routeId: 2}}>route2</Link>
-           </div>
-       )
-   }
+        pc.getRoutes().then(function(data) {
+            that.setState({
+                data: data
+            });
+        });
+    },
+
+    render: function() {
+        var Routers = this.state.data.map(function (route) {
+            return (
+                <Way data={route} />
+            );
+        });
+
+        return (
+            <div>
+                {Routers}
+            </div>
+        )
+    }
 });
+
+var Way = React.createClass({
+    render: function() {
+        var count = this.props.data.venues.length;
+        var date = this.props.data.modified.split('T')[0].replace(/-/g, '.');
+
+        var rnd = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var style = {
+            background: 'rgba(' + rnd() + ',' + rnd() + ',' + rnd() + ', 0.2)'
+        };
+
+        return (
+            <Link to="route" className="route" style={style} params={{routeId: this.props.data.id}}>
+                <div className="route__name">
+                    {this.props.data.name}
+                </div>
+                <span className="route__count">
+                    Сложность: {count}
+                </span>
+                <span className="route__author">
+                    Автор: {this.props.data.author}
+                </span>
+                <span className="route__modified">
+                    {date}
+                </span>
+                <span className="route__heart">
+                    <img width="15" src="/static/i/heart.svg" />
+                </span>
+
+            </Link>
+        )
+    }
+});
+
+
 
 var routes = (
     <Route name="app" path="/" handler={App}>
-        <Route name="map" handler={MapComponent} />
         <Route name="routes" handler={Routes} />
         <Route name="route" path="/route/:routeId" handler={VenuesList} />
         <DefaultRoute handler={Routes}/>

@@ -5,7 +5,7 @@ function Map() {
             lat: 59.949277,
             lng: 30.3041534,
             elem: document.getElementById('mapCanvas'),
-            icon: 'static/i/baloon.svg'
+            icon: '/static/i/baloon.svg'
         },
         directionDisplayOptions = {
             suppressMarkers: true,

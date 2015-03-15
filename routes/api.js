@@ -1,8 +1,8 @@
-var logger = require('../lib/logger'),
-    error = require('../lib/error'),
-    secret = require('../lib/secret'),
-    Foursquare = require('node-foursquare')(secret),
-    checkinApi = Foursquare.Checkins;
+var logger = require('../lib/logger');
+var error = require('../lib/error');
+var secret = require('../lib/secret');
+var utils = require('../lib/utils');
+var Foursquare = require('node-foursquare')(secret);
 
 module.exports = function(routes) {
     routes.checkin = function(req, res, next){
@@ -16,7 +16,7 @@ module.exports = function(routes) {
 
         logger.info('checkin in %s with %s token', venueID, accessToken);
 
-        checkinApi.addCheckin(venueID, null, accessToken, function (err, data, next) {
+        Foursquare.Checkins.addCheckin(venueID, null, accessToken, function (err, data) {
             if(err) {
                 logger.error('checkin error in %s with %s token', venueID, accessToken);
                 next(new error.HttpError(500, 'checkin error'));
@@ -24,6 +24,21 @@ module.exports = function(routes) {
 
             res.send(data);
         });
-    }
+    };
+
+    routes.getVenue = function(req, res, next) {
+        var venueID = req.params.venueId;
+
+        Foursquare.Venues.getVenue(venueID, null, function (err, data) {
+            if (err) {
+                logger.error('venue error in %s with %s token', venueID, accessToken);
+                next(new error.HttpError(500, 'get venue error'));
+            }
+
+            data = utils.sanitizeVenueData(data.venue);
+
+            res.send(data);
+        });
+    };
 };
 
