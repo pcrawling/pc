@@ -2,7 +2,7 @@ var forever = require('forever-monitor')
     , logger = require('./lib/logger')
     , config = ('./lib/config');
 
-var child = new (forever.Monitor)('./pc/app.js', config.forever);
+var child = new (forever.Monitor)('./app.js', config.forever);
 
 child.on('watch:restart', function(info) {
     logger.warn('Restaring script because ' + info.file + ' changed');
