@@ -189,7 +189,7 @@ var App = React.createClass({
                 <header>
                     <Link className="backBtn" to="routes">&larr;</Link>
                     <div className="controlsBtn" onClick={this.showControls}></div>
-                    <div className="logo">PUB&amp;BARS</div>
+                    <div className="logo">BAR&amp;BARS</div>
                     <div className="map" onClick={this.onClick}>maps</div>
                     <div className="user-info">
                         {login}
@@ -281,8 +281,101 @@ var SideBar = React.createClass({
                     <li>Выход</li>
                 </ul>
                 <div className="sidebar-logo">
-                    PUB&amp; BARS
+                    BAR&amp; BARS
                 </div>
+            </div>
+        )
+    }
+});
+
+var VenueSmall = React.createClass({
+    render: function() {
+        return (
+            <div className="venueSmall" data-vid={this.props.data.id} onClick={this.props.onClick}>
+                {this.props.data.name}
+            </div>
+        );
+    }
+});
+
+var Search = React.createClass({
+
+    getInitialState: function() {
+        return {
+            suggest: [],
+            added: []
+        }
+    },
+
+    onChange: function(e) {
+        var value = e.currentTarget.value;
+
+        if (value.length > 5) {
+            this.sendSearchRequest(value)
+        }
+    },
+
+    onAdd: function() {
+
+    },
+
+    sendSearchRequest: function(value) {
+        var that = this;
+        navigator.geolocation.getCurrentPosition(function(geo) {
+            var params = {
+                lat: geo.coords.latitude,
+                lng: geo.coords.longitude
+            };
+
+            return $.get('/api/v1/search/' + value, params, function(data) {
+                var state = that.state;
+                state.suggest = data.venues;
+
+                that.setState(state);
+            });
+        });
+    },
+
+    _onSelectVenue: function(e) {
+        var state = this.state;
+
+        var vid = e.currentTarget.dataset.vid;
+        var name = e.currentTarget.innerText;
+
+        state.added.push({
+            name: name,
+            vid: vid
+        });
+
+        this.setState(state);
+    },
+
+    render: function() {
+        var that = this;
+
+        var SuggestedVenues = this.state.suggest.map(function (venue) {
+            return (
+                <VenueSmall data={venue} onClick={that._onSelectVenue} />
+            );
+        });
+
+        var AddedVenues = this.state.added.map(function (venue) {
+            return (
+                <VenueSmall data={venue} onClick={that._onSelectVenue} />
+            );
+        });
+
+        return (
+            <div>
+                <input name="search" onChange={this.onChange}/>
+                <div className="suggest">
+                    {SuggestedVenues}
+                </div>
+                Добавленные:
+                <div className="added">
+                    {AddedVenues}
+                </div>
+                <button  onChange={this.onAdd}>Добавить</button>
             </div>
         )
     }
@@ -294,6 +387,7 @@ var routes = (
     <Route name="app" path="/" handler={App}>
         <Route name="routes" handler={Routes} />
         <Route name="route" path="/route/:routeId" handler={VenuesList} />
+        <Route name="search" path="/search" handler={Search} />
         <DefaultRoute handler={Routes}/>
     </Route>
 );

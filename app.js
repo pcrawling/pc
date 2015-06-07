@@ -51,6 +51,7 @@ app.route('/api/v1/routes')
 app.get('/api/v1/route/:routeId', routes.route);
 app.get('/api/v1/detail/:routeId', routes.detail);
 app.get('/api/v1/venue/:venueId', routes.getVenue);
+app.get('/api/v1/search/:query', routes.searchVenue);
 
 //--------------- чекины ---------------
 app.use(passport.ensureAuthenticated);
