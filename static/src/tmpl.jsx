@@ -189,7 +189,7 @@ var App = React.createClass({
                 <header>
                     <Link className="backBtn" to="routes">&larr;</Link>
                     <div className="controlsBtn" onClick={this.showControls}></div>
-                    <div className="logo">BAR&amp;BARS</div>
+                    <div className="logo">PUB&amp;BARS</div>
                     <div className="map" onClick={this.onClick}>maps</div>
                     <div className="user-info">
                         {login}
@@ -281,7 +281,7 @@ var SideBar = React.createClass({
                     <li>Выход</li>
                 </ul>
                 <div className="sidebar-logo">
-                    BAR&amp; BARS
+                    PUB&amp; BARS
                 </div>
             </div>
         )
