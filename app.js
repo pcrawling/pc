@@ -60,7 +60,7 @@ app.get('*', function(req, res) {
     res.render('index', { auth: !!req.user });
 });
 
-app.listen(config.secret.port, function() {
-    logger.trace("Express server listening on port " + config.secret.port);
+app.listen(secret.port, function() {
+    logger.trace("Express server listening on port " + secret.port);
 });
 
