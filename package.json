@@ -3,36 +3,43 @@
   "version": "0.0.1",
   "description": "",
   "main": "app.js",
+  "repository" : {
+    "type" : "git",
+    "url" : "git://github.com/restrry/pubcrawling.git"
+  },
   "directories": {
     "test": "test"
   },
   "dependencies": {
     "body-parser": "^1.0.0",
-    "connect": "*",
-    "connect-mongo": "*",
+    "connect-mongo": "^0.7.0",
     "cookie-parser": "^1.0.0",
-    "debug": "*",
+    "debug": "2.0.0",
     "errorhandler": "^1.0.0",
     "express": "~4.0.0",
     "express-session": "^1.0.0",
-    "forever-monitor": "*",
-    "http-status": "*",
-    "mongoose": "*",
+    "forever-monitor": "^1.5.0",
+    "http-status": "^0.1.8",
+    "mongoose": "^3.8.0",
     "morgan": "^1.5.0",
     "node-foursquare-2": "git://github.com/clintandrewhall/node-foursquare",
-    "passport": "*",
-    "passport-foursquare": "git://github.com/jaredhanson/passport-foursquare",
+    "passport": "^0.2.1",
+    "passport-foursquare": "^1.0.0",
     "request": "^2.53.0",
     "vow": "^0.4.5",
-    "winston": "*"
+    "winston": "^0.9.0",
+    "jade": "^1.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.0.0",
+    "gulp-stylus": "^2.0.1",
+    "gulp-react": "^3.0.0"
   },
   "scripts": {
+    "start": "gulp",
     "templ": "jsx ./static/src ./static/build"
   },
   "repository": "",
   "author": "",
-  "license": "BSD",
-  "devDependencies": {
-    "gulp-stylus": "^2.0.1"
-  }
+  "license": "BSD"
 }
