@@ -34,7 +34,7 @@ module.exports = function(routes) {
 
         logger.info('get route with id= %s for %s', routeId, accessToken);
 
-        return RouteModel.find({id: routeId}, function (err, route) {
+        return RouteModel.find({_id: routeId}, function (err, route) {
             if (err) {
                 logger.error('Internal error: %s', err);
                 return next(new error.HttpError(500, 'Internal error'));
@@ -202,32 +202,12 @@ module.exports = function(routes) {
     };
 
     // add route
-    routes.add = function(req, res, next){
-        // в нормальной работе берем данные из req.body
+    routes.add = function(req, res, next) {
+        //TODO: добавить проверок
         var routeData={
-            // не ну а хули, попуститься надо то
-            name: 'опохмел',
-            description: 'отлететь',
-            author: '91899962',
-            id: '1488',
-            venues: [
-                {
-                    //Бермуды
-                    id: '4ceebab182125481ac3666a1',
-                    drinks: [
-                        {
-                            name: 'рассол',
-                            type: 1,
-                            count: 2
-                        },
-                        {
-                            name: 'чай с лимончиком',
-                            type: 2,
-                            count: 1
-                        }
-                    ]
-                }
-            ]
+            name: req.body.name,
+            venues: JSON.parse(req.body.venues),
+            author: req.user.id
         };
 
         //TODO вынести в отдельный middleware
@@ -251,7 +231,7 @@ module.exports = function(routes) {
             }
 
             logger.info("route created");
-            return res.jsonp({ status: 'OK', route: route });
+            return res.json({ status: 'OK', route: route });
         });
     }
 };

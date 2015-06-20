@@ -21,6 +21,7 @@ app.set('view engine', 'jade');
 app.use(morgan('dev'));
 app.use(cookieParser());
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(session({
@@ -58,7 +59,7 @@ app.use(passport.ensureAuthenticated);
 app.get('/api/v1/checkin/:venueId', routes.checkin);
 
 app.get('*', function(req, res) {
-    res.render('index', { auth: !!req.user });
+    res.render('index', { user: req.user });
 });
 
 app.listen(secret.port, function() {

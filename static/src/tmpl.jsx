@@ -99,7 +99,7 @@ var Venue = React.createClass({
             </span>
         }
 
-        if (pc.auth) {
+        if (pc.user) {
             vCheckIn = <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>
             CHECK IN
             </div>
@@ -182,7 +182,7 @@ var App = React.createClass({
     },
 
     render: function () {
-        var login = !pc.auth ? <a href="/auth/foursquare">log in</a> : '';
+        var login = !pc.user ? <a href="/auth/foursquare">log in</a> : '';
 
         return (
             <div>
@@ -246,7 +246,7 @@ var Way = React.createClass({
         };
 
         return (
-            <Link to="route" className="route" style={style} params={{routeId: this.props.data.id}}>
+            <Link to="route" className="route" style={style} params={{routeId: this.props.data._id}}>
                 <div className="route__name">
                     {this.props.data.name}
                 </div>
@@ -291,7 +291,7 @@ var SideBar = React.createClass({
 var VenueSmall = React.createClass({
     render: function() {
         return (
-            <div className="venueSmall" data-vid={this.props.data.id} onClick={this.props.onClick}>
+            <div className="venueSmall" data-id={this.props.data.id} onClick={this.props.onClick}>
                 {this.props.data.name}
             </div>
         );
@@ -315,8 +315,15 @@ var Search = React.createClass({
         }
     },
 
-    onAdd: function() {
+    onAddRouter: function() {
+        var params = {
+            name: $('[name="name"]').val(),
+            venues: JSON.stringify(this.state.added)
+        };
 
+        $.post('/api/v1/routes', params, function() {
+            // do something
+        }, 'json');
     },
 
     sendSearchRequest: function(value) {
@@ -339,12 +346,12 @@ var Search = React.createClass({
     _onSelectVenue: function(e) {
         var state = this.state;
 
-        var vid = e.currentTarget.dataset.vid;
+        var id = e.currentTarget.dataset.id;
         var name = e.currentTarget.innerText;
 
         state.added.push({
             name: name,
-            vid: vid
+            id: id
         });
 
         this.setState(state);
@@ -367,7 +374,8 @@ var Search = React.createClass({
 
         return (
             <div>
-                <input name="search" onChange={this.onChange}/>
+                <input name="name" placeholder="Название" />
+                <input name="search" onChange={this.onChange} placeholder="Введите название заведения" />
                 <div className="suggest">
                     {SuggestedVenues}
                 </div>
@@ -375,7 +383,7 @@ var Search = React.createClass({
                 <div className="added">
                     {AddedVenues}
                 </div>
-                <button  onChange={this.onAdd}>Добавить</button>
+                <button onClick={this.onAddRouter}>Добавить</button>
             </div>
         )
     }
