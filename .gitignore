@@ -3,3 +3,4 @@
 /static/build
 /static/css
 static/bower_components
+.idea/
