@@ -303,12 +303,14 @@ var Search = React.createClass({
     getInitialState: function() {
         return {
             suggest: [],
-            added: []
+            added: [],
+            show: 'added',
+            name: ''
         }
     },
 
     onChange: function(e) {
-        var value = e.currentTarget.value;
+        var value = e.target.value;
 
         if (value.length > 5) {
             this.sendSearchRequest(value)
@@ -317,7 +319,7 @@ var Search = React.createClass({
 
     onAddRouter: function() {
         var params = {
-            name: $('[name="name"]').val(),
+            name: this.state.name,
             venues: JSON.stringify(this.state.added)
         };
 
@@ -337,6 +339,7 @@ var Search = React.createClass({
             return $.get('/api/v1/search/' + value, params, function(data) {
                 var state = that.state;
                 state.suggest = data.venues;
+                state.show = 'suggest';
 
                 that.setState(state);
             });
@@ -354,11 +357,25 @@ var Search = React.createClass({
             id: id
         });
 
+        state.show = 'added';
+
         this.setState(state);
+    },
+
+    onInputChange: function(e) {
+        var state = this.state;
+        state.name = e.target.value;
+
+        this.setState(state)
     },
 
     render: function() {
         var that = this;
+        var classString = 'search';
+
+        if (this.state.show === 'suggest') {
+            classString += ' show-suggest'
+        }
 
         var SuggestedVenues = this.state.suggest.map(function (venue) {
             return (
@@ -373,17 +390,17 @@ var Search = React.createClass({
         });
 
         return (
-            <div>
-                <input name="name" placeholder="Название" />
-                <input name="search" onChange={this.onChange} placeholder="Введите название заведения" />
+            <div className={classString}>
+                <input name="name" value={this.state.name} placeholder="Название маршрута" className="search-input" onChange={this.onInputChange} />
+                <input name="search"  onChange={this.onChange} placeholder="Введите название заведения"  className="search-input" />
                 <div className="suggest">
                     {SuggestedVenues}
                 </div>
-                Добавленные:
                 <div className="added">
                     {AddedVenues}
+                    <button className="search-btn" onClick={this.onAddRouter}>Добавить</button>
                 </div>
-                <button onClick={this.onAddRouter}>Добавить</button>
+
             </div>
         )
     }
