@@ -42,10 +42,13 @@ module.exports = function(routes) {
     };
 
     routes.searchVenue = function(req, res, next) {
-        var query = req.params.query;
         var accessToken = req.user.code;
+        var params = {
+            query: req.params.query,
+            limit: 10
+        };
 
-        Foursquare.Venues.search(req.query.lat, req.query.lng, null, {query: query}, accessToken, function(err, data) {
+        Foursquare.Venues.search(req.query.lat, req.query.lng, null, params, accessToken, function(err, data) {
             if (err) {
                 logger.error('venue error in %s with %s query', accessToken, query);
                 next(new error.HttpError(500, 'search venue error'));
