@@ -10,3 +10,5 @@
 	* `db.%collection%.remove(<query>)` - удаление элемента коллекции
 3. `node app.js` - dev
 4. `node start.js` - with `forever` package
+
+[FSQ API](https://developer.foursquare.com/docs/)
