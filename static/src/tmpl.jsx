@@ -119,8 +119,6 @@ var Venue = React.createClass({
 });
 
 var VenuesList = React.createClass({
-    mixins: [Router.State],
-
     getInitialState: function() {
         return {
             data: []
@@ -128,7 +126,7 @@ var VenuesList = React.createClass({
     },
     componentDidMount: function() {
         var that = this;
-        var routeId = this.getParams().routeId;
+        var routeId = this.props.params.routeId;
 
         pc.getTrip(routeId).then(function(data){
             that.setState({
