@@ -5,7 +5,10 @@ var RouteModel = require('../models/route'),
 
 var Data = [];
 
-mongoose.connection.on('open', runIt);
+mongoose.connection.on('open', function() {
+    logger.info('mongoose connection is opened');
+    //runIt();
+});
 
 function runIt() {
     dropDatabase();
