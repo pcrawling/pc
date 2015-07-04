@@ -21,6 +21,7 @@ app.set('view engine', 'jade');
 app.use(morgan('dev'));
 app.use(cookieParser());
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(session({
@@ -51,16 +52,17 @@ app.route('/api/v1/routes')
 app.get('/api/v1/route/:routeId', routes.route);
 app.get('/api/v1/detail/:routeId', routes.detail);
 app.get('/api/v1/venue/:venueId', routes.getVenue);
+app.get('/api/v1/search/:query', routes.searchVenue);
 
 //--------------- чекины ---------------
 app.use(passport.ensureAuthenticated);
 app.get('/api/v1/checkin/:venueId', routes.checkin);
 
 app.get('*', function(req, res) {
-    res.render('index', { auth: !!req.user });
+    res.render('index', { user: req.user });
 });
 
-app.listen(config.app.port, function() {
-    logger.trace("Express server listening on port " + config.app.port);
+app.listen(secret.port, function() {
+    logger.trace("Express server listening on port " + secret.port);
 });
 

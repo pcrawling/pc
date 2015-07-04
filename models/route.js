@@ -13,7 +13,6 @@ var Venue = new Schema({
 });
 
 var Route = new Schema({
-    id: { type: String, required: true },   // внутренний, React требует цифровой уникальный ключ
     name: { type: String, required: true },
     author: { type: String }, // foursquareId for user
     venues: [Venue],

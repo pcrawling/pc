@@ -40,5 +40,23 @@ module.exports = function(routes) {
             res.send(data);
         });
     };
+
+    routes.searchVenue = function(req, res, next) {
+        var accessToken = req.user.code;
+        var params = {
+            query: req.params.query,
+            limit: 10
+        };
+
+        Foursquare.Venues.search(req.query.lat, req.query.lng, null, params, accessToken, function(err, data) {
+            if (err) {
+                logger.error('venue error in %s with %s query', accessToken, query);
+                next(new error.HttpError(500, 'search venue error'));
+            }
+
+            logger.info(data);
+            res.send(data);
+        })
+    }
 };
 

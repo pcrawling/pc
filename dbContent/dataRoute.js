@@ -1,54 +1,16 @@
 var dataRoute = [
     {
-        //Yandex
-        name: 'почта-морда',
+        name: 'тактактак',
         author: '91899962',
-        id: '1',
         venues: [
             {
-                id: '4d56f044ba5b224b8e5a2114',
-                drinks: [
-                    {
-                        name: 'боярский',
-                        type: 1,
-                        count: 2
-                    },
-                    {
-                        name: 'белый русский',
-                        type: 2,
-                        count: 1
-                    }
-                ]
+                id: '4d56f044ba5b224b8e5a2114'
             },
             {
-                id: '4bad17bef964a520d12c3be3',
-                drinks: [
-                    {
-                        name: 'пойло',
-                        type: 1,
-                        count: 1
-                    },
-                    {
-                        name: 'и уже пиздец',
-                        type: 2,
-                        count: 1
-                    }
-                ]
+                id: '4bad17bef964a520d12c3be3'
             },
             {
-                id: '4e4ec0937d8bd425e485ef71',
-                drinks: [
-                    {
-                        name: 'рэп-шмэп',
-                        type: 1,
-                        count: 1
-                    },
-                    {
-                        name: 'хуйня кароч',
-                        type: 2,
-                        count: 1
-                    }
-                ]
+                id: '4e4ec0937d8bd425e485ef71'
             },
             {
                 id: '501801e0e4b054aab314d0d6'
@@ -86,7 +48,6 @@ var dataRoute = [
         //Bon
         name: 'бон',
         author: '91899962',
-        id: '2',
         venues:[
             {
                 //Стирка 40
@@ -125,7 +86,6 @@ var dataRoute = [
     {
         name: 'синяя яма1',
         author: '91899962',
-        id: '3',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -135,7 +95,6 @@ var dataRoute = [
     {
         name: 'синяя яма2',
         author: '91899962',
-        id: '4',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -145,7 +104,6 @@ var dataRoute = [
     {
         name: 'синяя яма3',
         author: '91899962',
-        id: '5',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -155,7 +113,6 @@ var dataRoute = [
     {
         name: 'синяя яма4',
         author: '91899962',
-        id: '6',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -165,7 +122,6 @@ var dataRoute = [
     {
         name: 'синяя яма5',
         author: '91899962',
-        id: '7',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -175,7 +131,6 @@ var dataRoute = [
     {
         name: 'синяя яма6',
         author: '91899962',
-        id: '8',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -185,7 +140,6 @@ var dataRoute = [
     {
         name: 'синяя яма7',
         author: '91899962',
-        id: '9',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -195,7 +149,6 @@ var dataRoute = [
     {
         name: 'синяя яма8',
         author: '91899962',
-        id: '10',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -205,7 +158,6 @@ var dataRoute = [
     {
         name: 'синяя яма9',
         author: '91899962',
-        id: '11',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'
@@ -215,7 +167,6 @@ var dataRoute = [
     {
         name: 'синяя яма10',
         author: '91899962',
-        id: '12',
         venues:[
             {
                 id: '4ceebab182125481ac3666a1'

@@ -195,6 +195,7 @@ header
   li
     list-style: none
     padding: 10px
+    line-height: 20px
     border-bottom: 1px solid rgba(255, 255, 255, .25 )
     
 .sidebar-logo
@@ -214,3 +215,38 @@ a[href^="http://maps.google.com/maps"]
 
 .gmnoprint div
   background:none !important
+
+//search
+.search
+  .suggest
+    display: none
+
+  .added
+    display: block
+
+.search.show-suggest
+  .suggest
+    display: block
+
+  .added
+    display: none
+
+.search-input
+  width: 100%
+  border: 0 none
+  box-sizing: border-box
+  font-size: 16px
+  padding: 10px
+  border-bottom: 1px solid #000
+  
+.search-btn
+  box-sizing: border-box
+  width: 100%
+  font-size: 15px
+  border: 0 none
+  background: darkseagreen
+  padding: 15px
+  margin-top: 10px
+
+.venueSmall
+  padding: 10px

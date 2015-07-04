@@ -99,7 +99,7 @@ var Venue = React.createClass({
             </span>
         }
 
-        if (pc.auth) {
+        if (pc.user) {
             vCheckIn = <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>
             CHECK IN
             </div>
@@ -119,8 +119,6 @@ var Venue = React.createClass({
 });
 
 var VenuesList = React.createClass({
-    mixins: [Router.State],
-
     getInitialState: function() {
         return {
             data: []
@@ -128,7 +126,7 @@ var VenuesList = React.createClass({
     },
     componentDidMount: function() {
         var that = this;
-        var routeId = this.getParams().routeId;
+        var routeId = this.props.params.routeId;
 
         pc.getTrip(routeId).then(function(data){
             that.setState({
@@ -182,7 +180,7 @@ var App = React.createClass({
     },
 
     render: function () {
-        var login = !pc.auth ? <a href="/auth/foursquare">log in</a> : '';
+        var login = !pc.user ? <a href="/auth/foursquare">log in</a> : '';
 
         return (
             <div>
@@ -246,7 +244,7 @@ var Way = React.createClass({
         };
 
         return (
-            <Link to="route" className="route" style={style} params={{routeId: this.props.data.id}}>
+            <Link to="route" className="route" style={style} params={{routeId: this.props.data._id}}>
                 <div className="route__name">
                     {this.props.data.name}
                 </div>
@@ -288,12 +286,131 @@ var SideBar = React.createClass({
     }
 });
 
+var VenueSmall = React.createClass({
+    render: function() {
+        return (
+            <div className="venueSmall" data-id={this.props.data.id} onClick={this.props.onClick}>
+                {this.props.data.name}
+            </div>
+        );
+    }
+});
+
+var Search = React.createClass({
+
+    getInitialState: function() {
+        return {
+            suggest: [],
+            added: [],
+            show: 'added',
+            name: ''
+        }
+    },
+
+    onChange: function(e) {
+        var value = e.target.value;
+
+        if (value.length > 5) {
+            this.sendSearchRequest(value)
+        }
+    },
+
+    onAddRouter: function() {
+        var params = {
+            name: this.state.name,
+            venues: JSON.stringify(this.state.added)
+        };
+
+        $.post('/api/v1/routes', params, function() {
+            // do something
+        }, 'json');
+    },
+
+    sendSearchRequest: function(value) {
+        var that = this;
+        navigator.geolocation.getCurrentPosition(function(geo) {
+            var params = {
+                lat: geo.coords.latitude,
+                lng: geo.coords.longitude
+            };
+
+            return $.get('/api/v1/search/' + value, params, function(data) {
+                var state = that.state;
+                state.suggest = data.venues;
+                state.show = 'suggest';
+
+                that.setState(state);
+            });
+        });
+    },
+
+    _onSelectVenue: function(e) {
+        var state = this.state;
+
+        var id = e.currentTarget.dataset.id;
+        var name = e.currentTarget.innerText;
+
+        state.added.push({
+            name: name,
+            id: id
+        });
+
+        state.show = 'added';
+
+        this.setState(state);
+    },
+
+    onInputChange: function(e) {
+        var state = this.state;
+        state.name = e.target.value;
+
+        this.setState(state)
+    },
+
+    render: function() {
+        var that = this;
+        var classString = 'search';
+
+        if (this.state.show === 'suggest') {
+            classString += ' show-suggest'
+        }
+
+        var SuggestedVenues = this.state.suggest.map(function (venue) {
+            return (
+                <VenueSmall data={venue} onClick={that._onSelectVenue} />
+            );
+        });
+
+        var AddedVenues = this.state.added.map(function (venue) {
+            return (
+                <VenueSmall data={venue} onClick={that._onSelectVenue} />
+            );
+        });
+
+        return (
+            <div className={classString}>
+                <input name="name" value={this.state.name} placeholder="Название маршрута" className="search-input" onChange={this.onInputChange} />
+                <input name="search"  onChange={this.onChange} placeholder="Введите название заведения"  className="search-input" />
+                <div className="suggest">
+                    {SuggestedVenues}
+                </div>
+                <div className="added">
+                    {AddedVenues}
+                    <button className="search-btn" onClick={this.onAddRouter}>Добавить</button>
+                </div>
+
+            </div>
+        )
+    }
+});
+
 
 
 var routes = (
     <Route name="app" path="/" handler={App}>
         <Route name="routes" handler={Routes} />
         <Route name="route" path="/route/:routeId" handler={VenuesList} />
+        <Route name="search" path="/search" handler={Search} />
         <DefaultRoute handler={Routes}/>
     </Route>
 );
