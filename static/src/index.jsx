@@ -1,13 +1,16 @@
 'use strict';
 import React from 'react/addons';
-import {GoogleMaps, Marker} from "react-google-maps";
+import { GoogleMaps, Marker } from "react-google-maps";
 
 import Router from 'react-router';
-
 const { Route, NotFoundRoute, DefaultRoute, Link, RouteHandler } = Router;
+const { update } = React.addons;
 
+const GoogleMapsAPI = window.google.maps;
+const LatLng = GoogleMapsAPI.LatLng;
+const LatLngBounds = GoogleMapsAPI.LatLngBounds;
 
-const {update} = React.addons;
+var pc = {};
 
 /* @see http://en.wikipedia.org/wiki/Pub_crawl */
 
@@ -101,7 +104,7 @@ export class Venue extends React.Component {
             </span>
     }
 
-    if (pc.auth) {
+    if (pc.user) {
       vCheckIn = <div className="checkinBtn" onClick={this.onClick} data-vid={this.props.data.id}>
         CHECK IN
       </div>
@@ -120,7 +123,6 @@ export class Venue extends React.Component {
   }
 };
 
-
 var VenuesList = React.createClass({
   mixins: [Router.State],
 
@@ -137,7 +139,7 @@ var VenuesList = React.createClass({
   },
 
   render: function() {
-    var Venues = this.state.data.map((venue) =>{
+    var Venues = this.state.data.map(venue =>{
       return (
         <Venue data={venue} />
       );
@@ -156,11 +158,65 @@ var VenuesList = React.createClass({
   }
 });
 
+var coords = [
+  {
+    lat: 25.0112183,
+    lng: 121.52067570000001
+  },
+  {
+    lat: 24.0112183,
+    lng: 122.52067570000001
+  },
+  {
+    lat: 26.0112183,
+    lng: 123.52067570000001
+  }
+];
 export class MapComponent extends React.Component {
+  constructor (...args) {
+    super(...args);
+    this.state = {
+      markers: coords.map(function(coord){
+        return {
+          position:coord,
+          key: "Taiwan",
+          animation: 2
+        }
+      })
+    };
+
+  }
+
+
   render() {
+    const {props, state} = this;
+    const {googleMapsApi, ...otherProps} = props;
+
+    let bounds = new LatLngBounds();
+    coords.forEach(coord=>{
+      bounds.extend(coord);
+    });
+
     return (
       // TODO передать параметры и ренденрить
-      <GoogleMaps/>
+      <GoogleMaps
+        containerProps={{
+          ...otherProps,
+          style: {
+            height: "500px",
+            width: "500px"
+          }
+        }}
+        ref="map"
+        googleMapsApi={GoogleMapsAPI}
+        bounds={bounds}
+        >
+        {state.markers.map(marker=>{
+          return <Marker
+            position={marker.position}
+            />
+        }, this)}
+        </GoogleMaps>
     );
   }
 };
@@ -207,7 +263,7 @@ export class App extends React.Component {
   }
 
   render(){
-    var login = !pc.auth ? <a href="/auth/foursquare">log in</a> : '';
+    var login = !pc.user ? <a href="/auth/foursquare">log in</a> : '';
     return (
       <div>
         <header>
@@ -270,23 +326,22 @@ export class Way extends React.Component {
     };
 
     return (
-      <Link to="route" className="route" style={style} params={{routeId: this.props.data.id}}>
+      <Link to="route" className="route" style={style} params={{routeId: this.props.data._id}}>
         <div className="route__name">
           {this.props.data.name}
         </div>
-                <span className="route__count">
-                    Сложность: {count}
-                </span>
-                <span className="route__author">
-                    Автор: {this.props.data.author}
-                </span>
-                <span className="route__modified">
-                    {date}
-                </span>
-                <span className="route__heart">
-                    <img width="15" src="/static/i/heart.svg" />
-                </span>
-
+        <span className="route__count">
+            Сложность: {count}
+        </span>
+        <span className="route__author">
+            Автор: {this.props.data.author}
+        </span>
+        <span className="route__modified">
+            {date}
+        </span>
+        <span className="route__heart">
+            <img width="15" src="/static/i/heart.svg" />
+        </span>
       </Link>
     )
   }
@@ -312,13 +367,131 @@ export class SideBar extends React.Component {
   }
 };
 
+var VenueSmall = React.createClass({
+  render: function() {
+    return (
+      <div className="venueSmall" data-id={this.props.data.id} onClick={this.props.onClick}>
+        {this.props.data.name}
+      </div>
+    );
+  }
+});
+
+var Search = React.createClass({
+
+  getInitialState: function() {
+    return {
+      suggest: [],
+      added: [],
+      show: 'added',
+      name: ''
+    }
+  },
+
+  onChange: function(e) {
+    var value = e.target.value;
+
+    if (value.length > 5) {
+      this.sendSearchRequest(value)
+    }
+  },
+
+  onAddRouter: function() {
+    var params = {
+      name: this.state.name,
+      venues: JSON.stringify(this.state.added)
+    };
+
+    $.post('/api/v1/routes', params, function() {
+      // do something
+    }, 'json');
+  },
+
+  sendSearchRequest: function(value) {
+    var that = this;
+    navigator.geolocation.getCurrentPosition(function(geo) {
+      var params = {
+        lat: geo.coords.latitude,
+        lng: geo.coords.longitude
+      };
+
+      return $.get('/api/v1/search/' + value, params, function(data) {
+        var state = that.state;
+        state.suggest = data.venues;
+        state.show = 'suggest';
+
+        that.setState(state);
+      });
+    });
+  },
+
+  _onSelectVenue: function(e) {
+    var state = this.state;
+
+    var id = e.currentTarget.dataset.id;
+    var name = e.currentTarget.innerText;
+
+    state.added.push({
+      name: name,
+      id: id
+    });
+
+    state.show = 'added';
+
+    this.setState(state);
+  },
+
+  onInputChange: function(e) {
+    var state = this.state;
+    state.name = e.target.value;
+
+    this.setState(state)
+  },
+
+  render: function() {
+    var that = this;
+    var classString = 'search';
+
+    if (this.state.show === 'suggest') {
+      classString += ' show-suggest'
+    }
+
+    var SuggestedVenues = this.state.suggest.map(function (venue) {
+      return (
+        <VenueSmall data={venue} onClick={that._onSelectVenue} />
+      );
+    });
+
+    var AddedVenues = this.state.added.map(function (venue) {
+      return (
+        <VenueSmall data={venue} onClick={that._onSelectVenue} />
+      );
+    });
+
+    return (
+      <div className={classString}>
+        <input name="name" value={this.state.name} placeholder="Название маршрута" className="search-input" onChange={this.onInputChange} />
+        <input name="search"  onChange={this.onChange} placeholder="Введите название заведения"  className="search-input" />
+        <div className="suggest">
+          {SuggestedVenues}
+        </div>
+        <div className="added">
+          {AddedVenues}
+          <button className="search-btn" onClick={this.onAddRouter}>Добавить</button>
+        </div>
+
+      </div>
+    )
+  }
+});
+
 var routes = (
   <Route name="app" path="/" handler={App}>
-    <Route name="routes" handler={Routes} />
-    <Route name="route" path="/route/:routeId" handler={VenuesList}>
-      <Route name="map" path="map" handler={VenuesListMap} />
-    </Route>
     <DefaultRoute handler={Routes}/>
+    <Route name="routes" handler={Routes} />
+    <Route name="route" path="/route/:routeId" handler={VenuesList} />
+    <Route name="map" path="/route/:routeId/map" handler={VenuesListMap} />
+    <Route name="search" path="/search" handler={Search} />
   </Route>
 );
 
