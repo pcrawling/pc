@@ -1,5 +1,3 @@
-var map;
-
 function Map() {
     var params =  {
             lat: 59.949277,
@@ -28,11 +26,11 @@ function Map() {
 
     function createIcon() {
         return new google.maps.MarkerImage(
-            'img/baloon.svg',
-            null, /* size is determined at runtime */
-            null, /* origin is 0,0 */
-            null, /* anchor is bottom center of the scaled image */
-            new google.maps.Size(64, 32)
+          'img/baloon.svg',
+          null, /* size is determined at runtime */
+          null, /* origin is 0,0 */
+          null, /* anchor is bottom center of the scaled image */
+          new google.maps.Size(64, 32)
         );
     }
 
@@ -234,14 +232,8 @@ function Map() {
     };
 }
 
-
-pc.initialize = function(barsData){
-    map = new Map();
-    map.init();
-    map.draw(barsData);
-
-
-//    setTimeout(function() {
-//        map.drawRoute(barsData[0], barsData[1]);
-//    }, 5000);
-}
+export default function(barsData){
+  var map = new Map();
+  map.init();
+  map.draw(barsData);
+};
