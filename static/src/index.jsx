@@ -3,12 +3,12 @@ import React from 'react/addons';
 import { GoogleMaps, Marker } from "react-google-maps";
 
 import Router from 'react-router';
+// TODO NotFoundRouter
 const { Route, NotFoundRoute, DefaultRoute, Link, RouteHandler } = Router;
 const { update } = React.addons;
 
-const GoogleMapsAPI = window.google.maps;
-const LatLng = GoogleMapsAPI.LatLng;
-const LatLngBounds = GoogleMapsAPI.LatLngBounds;
+const GoogleMapsAPI = google.maps;
+const { LatLng, LatLngBounds } = GoogleMapsAPI;
 
 var pc = {};
 
@@ -134,7 +134,6 @@ var VenuesList = React.createClass({
 
   componentDidMount: function() {
     var routeId = this.getParams().routeId;
-
     pc.getTrip(routeId).then((data)=> this.setState({ data: data }))
   },
 
@@ -158,65 +157,43 @@ var VenuesList = React.createClass({
   }
 });
 
-var coords = [
-  {
-    lat: 25.0112183,
-    lng: 121.52067570000001
-  },
-  {
-    lat: 24.0112183,
-    lng: 122.52067570000001
-  },
-  {
-    lat: 26.0112183,
-    lng: 123.52067570000001
-  }
-];
 export class MapComponent extends React.Component {
-  constructor (...args) {
+  // TODO up verison and state = {markers: []}
+  constructor (...args){
     super(...args);
     this.state = {
-      markers: coords.map(function(coord){
-        return {
-          position:coord,
-          key: "Taiwan",
-          animation: 2
-        }
-      })
+      markers: []
     };
-
   }
 
+  componentWillReceiveProps (props){
+    let markers = props.data.map(venue => { return {position: new LatLng(venue.lat, venue.lng)}});
+    this.setState({ markers });
+  }
 
-  render() {
-    const {props, state} = this;
-    const {googleMapsApi, ...otherProps} = props;
-
+  componentDidUpdate(){
     let bounds = new LatLngBounds();
-    coords.forEach(coord=>{
-      bounds.extend(coord);
+
+    this.state.markers.forEach(marker=>{
+      bounds.extend(marker.position);
     });
 
+    this.refs.map.fitBounds(bounds);
+  }
+
+  render() {
     return (
-      // TODO передать параметры и ренденрить
       <GoogleMaps
         containerProps={{
-          ...otherProps,
           style: {
             height: "500px",
             width: "500px"
           }
         }}
         ref="map"
-        googleMapsApi={GoogleMapsAPI}
-        bounds={bounds}
-        >
-        {state.markers.map(marker=>{
-          return <Marker
-            position={marker.position}
-            />
-        }, this)}
-        </GoogleMaps>
+        googleMapsApi={GoogleMapsAPI}>
+          {this.state.markers.map((marker)=> <Marker position={marker.position} /> )}
+      </GoogleMaps>
     );
   }
 };
@@ -232,21 +209,16 @@ var VenuesListMap = React.createClass({
 
   componentDidMount: function() {
     var routeId = this.getParams().routeId;
-
-    pc.getTrip(routeId).then((data)=> this.setState({ data: data }))
+    pc.getTrip(routeId).then((data)=> this.setState({ data: data}))
   },
 
-  render: function() {
-
+  render: function(){
+    // todo remove wrapper
     return (
       <div className="VenuesList">
-        <MapComponent
-
-          />
+        <MapComponent data={this.state.data} />
       </div>
-
     );
-
   }
 });
 
