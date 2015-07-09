@@ -65,4 +65,3 @@ app.get('*', function(req, res) {
 app.listen(secret.port, function() {
     logger.trace("Express server listening on port " + secret.port);
 });
-

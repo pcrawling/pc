@@ -1,11 +1,10 @@
 doctype html
-html(lang="en")
+html(lang="ru")
     head
         title Pub Crawl
         meta(content='initial-scale=1,user-scalable=no,minimum-scale=1,maximum-scale=1,width=device-width',name='viewport')
-        script(src='http://fb.me/react-0.13.3.js')
+        meta(charset='utf-8')
         script(src='http://yandex.st/jquery/2.1.1/jquery.js')
-        script(src='/static/bower_components/vow/lib/vow.js')
         script(src='http://maps.googleapis.com/maps/api/js?v=3.9&key=AIzaSyBZkK01hng-ry6tdmzBHkfOFKCHgVHxdH0&sensor=true')
         link(rel='stylesheet', href='/static/css/main.css')
         script.
@@ -14,7 +13,4 @@ html(lang="en")
     body
         #app
         #sidebar
-        script(src='/static/bower_components/react-router/build/umd/ReactRouter.js')
-        script(src='/static/build/router.js')
-        script(src='/static/build/tmpl.js')
-        script(src='/static/js/viewer.js')
+        script(src='/static/js/bundle.js')

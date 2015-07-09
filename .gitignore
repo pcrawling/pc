@@ -1,6 +1,6 @@
 /lib/secret.js
 /node_modules
-/static/build
+/static/js/bundle.js
 /static/css
 static/bower_components
 .idea/
