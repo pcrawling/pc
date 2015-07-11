@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "app.js",
-  "repository" : {
-    "type" : "git",
-    "url" : "git://github.com/restrry/pubcrawling.git"
-  },
+  "repository": "",
   "directories": {
     "test": "test"
   },
@@ -20,23 +17,22 @@
     "express-session": "^1.0.0",
     "forever-monitor": "^1.5.0",
     "http-status": "^0.1.8",
+    "jade": "^1.0.0",
     "mongoose": "^3.8.0",
     "morgan": "^1.5.0",
     "node-foursquare-2": "git://github.com/clintandrewhall/node-foursquare",
     "passport": "^0.2.1",
     "passport-foursquare": "^1.0.0",
-    "request": "^2.53.0",
-    "winston": "^0.9.0",
-    "jade": "^1.0.0",
-
     "react": "^0.13.3",
+    "react-google-maps": "^1.0.0",
     "react-router": "^0.13.3",
-    "react-google-maps": "^1.0.0"
+    "request": "^2.53.0",
+    "vow": "^0.4.10",
+    "winston": "^0.9.0"
   },
   "devDependencies": {
     "gulp": "^3.8.0",
     "gulp-stylus": "^2.0.1",
-
     "babelify": "^5.0.3",
     "browserify": "^9.0.3",
     "vinyl-source-stream": "^1.0.0"
@@ -45,7 +41,6 @@
     "start": "gulp",
     "templ": "jsx ./static/src ./static/build"
   },
-  "repository": "",
   "author": "",
   "license": "BSD"
 }
