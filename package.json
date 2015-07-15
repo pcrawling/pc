@@ -38,8 +38,7 @@
     "vinyl-source-stream": "^1.0.0"
   },
   "scripts": {
-    "start": "gulp",
-    "templ": "jsx ./static/src ./static/build"
+    "start": "gulp"
   },
   "author": "",
   "license": "BSD"
