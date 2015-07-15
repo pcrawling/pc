@@ -1,7 +1,8 @@
 'use strict';
-import React from 'react/addons';
-import { GoogleMaps, Marker } from "react-google-maps";
 
+import React from 'react/addons';
+import { GoogleMaps, Marker } from 'react-google-maps';
+import SideBar from './sidebar';
 import Router from 'react-router';
 // TODO NotFoundRouter
 const { Route, NotFoundRoute, DefaultRoute, Link, RouteHandler } = Router;
@@ -72,7 +73,7 @@ var pc = {};
 
 export class Venue extends React.Component {
 
-  onClick(e){
+  onClick(e) {
     var vid = e.currentTarget.dataset.vid;
     pc.doCheckIn(vid);
   }
@@ -99,9 +100,9 @@ export class Venue extends React.Component {
 
     if (this.props.data.here_now) {
       vHere = <span className="vHereNow">
-                    {this.props.data.here_now}
-        &nbsp;<img width="13" src="/static/i/group58.svg" />
-            </span>
+                {this.props.data.here_now}
+                &nbsp;<img width="13" src="/static/i/group58.svg" />
+              </span>
     }
 
     if (pc.user) {
@@ -111,21 +112,19 @@ export class Venue extends React.Component {
     }
 
     return (
-      <div className="v" style={divStyle}>
+        <div className="v" style={divStyle}>
         {vCheckIn}
-        <div className="vName">
+          <div className="vName">
           {this.props.data.name}
-        </div>
+          </div>
         {vHere}
         {vRating}
-      </div>
+        </div>
     );
   }
 };
 
 var VenuesList = React.createClass({
-  mixins: [Router.State],
-
   getInitialState: function() {
     return {
       data: []
@@ -133,7 +132,7 @@ var VenuesList = React.createClass({
   },
 
   componentDidMount: function() {
-    var routeId = this.getParams().routeId;
+    var routeId = this.props.params.routeId;
     pc.getTrip(routeId).then((data)=> this.setState({ data: data }))
   },
 
@@ -143,7 +142,7 @@ var VenuesList = React.createClass({
         <Venue data={venue} />
       );
     });
-    var id = this.getParams().routeId;
+    var id = this.props.params.routeId;
 
     return (
       <div>
@@ -199,8 +198,6 @@ export class MapComponent extends React.Component {
 };
 
 var VenuesListMap = React.createClass({
-  mixins: [Router.State],
-
   getInitialState: function() {
     return {
       data: []
@@ -315,26 +312,6 @@ export class Way extends React.Component {
             <img width="15" src="/static/i/heart.svg" />
         </span>
       </Link>
-    )
-  }
-};
-
-export class SideBar extends React.Component {
-  render() {
-    return (
-      <div>
-        <ul>
-          <li>Аккаунт</li>
-          <li>Список маршрутов</li>
-          <li>Мои маршруты</li>
-          <li>Добавить маршрут</li>
-          <li>Топ мест</li>
-          <li>Выход</li>
-        </ul>
-        <div className="sidebar-logo">
-          PUB&amp; BARS
-        </div>
-      </div>
     )
   }
 };
