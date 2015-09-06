@@ -11,7 +11,7 @@ const { update } = React.addons;
 const GoogleMapsAPI = google.maps;
 const { LatLng, LatLngBounds } = GoogleMapsAPI;
 
-var pc = {};
+pc = pc || {};
 
 /* @see http://en.wikipedia.org/wiki/Pub_crawl */
 
@@ -139,7 +139,7 @@ var VenuesList = React.createClass({
   render: function() {
     var Venues = this.state.data.map(venue =>{
       return (
-        <Venue data={venue} />
+        <Venue data={venue} key={venue.id} />
       );
     });
     var id = this.props.params.routeId;
@@ -158,8 +158,8 @@ var VenuesList = React.createClass({
 
 export class MapComponent extends React.Component {
   // TODO up verison and state = {markers: []}
-  constructor (...args){
-    super(...args);
+  constructor (props){
+    super(props);
     this.state = {
       markers: []
     };
@@ -186,7 +186,7 @@ export class MapComponent extends React.Component {
         containerProps={{
           style: {
             height: "500px",
-            width: "500px"
+            width: "100%"
           }
         }}
         ref="map"
@@ -205,7 +205,7 @@ var VenuesListMap = React.createClass({
   },
 
   componentDidMount: function() {
-    var routeId = this.getParams().routeId;
+    var routeId = this.props.params.routeId;
     pc.getTrip(routeId).then((data)=> this.setState({ data: data}))
   },
 
@@ -221,14 +221,14 @@ var VenuesListMap = React.createClass({
 
 export class App extends React.Component {
   onClick(){
-    console.log('__onClick__');
-    //$('.b-map').toggle();
+    //console.log('__onClick__');
+    $('.b-map').toggle();
     return null;
   }
 
   showControls(){
-    console.log('__showControls__');
-    //$('#app').toggleClass('move');
+    //console.log('__showControls__');
+    $('#app').toggleClass('move');
   }
 
   render(){
@@ -326,7 +326,7 @@ var VenueSmall = React.createClass({
   }
 });
 
-var Search = React.createClass({
+var Add = React.createClass({
 
   getInitialState: function() {
     return {
@@ -440,7 +440,7 @@ var routes = (
     <Route name="routes" handler={Routes} />
     <Route name="route" path="/route/:routeId" handler={VenuesList} />
     <Route name="map" path="/route/:routeId/map" handler={VenuesListMap} />
-    <Route name="search" path="/search" handler={Search} />
+    <Route name="add" path="/add" handler={Add} />
   </Route>
 );
 
